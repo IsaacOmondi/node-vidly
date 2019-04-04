@@ -4,7 +4,7 @@ const router = express.Router();
 
 
 router.get('/', (req, res) => {
-    res.render('index', { title: 'Node-Vivly', message: 'Hello' });
+    res.send('This is Home');
 });
 
-module.export = router;
+module.exports = router;
