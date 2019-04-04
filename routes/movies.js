@@ -1,14 +1,19 @@
 /* eslint-disable radix */
 const express = require('express');
 const Joi = require('joi');
+const bodyParser = require('body-parser');
 
 const router = express.Router();
+
+router.use(bodyParser.urlencoded({ extended: false }));
+router.use(bodyParser.json());
 
 const movies = [
     { id: 1, name: 'Fight Club' },
     { id: 2, name: 'Inception' },
     { id: 3, name: 'The Raid' },
 ];
+
 
 function validateMovie(movie) {
     const schema = {
@@ -19,11 +24,11 @@ function validateMovie(movie) {
 }
 
 
-router.get('/api/movies/', (req, res) => {
+router.get('/', (req, res) => {
     res.status(200).send(movies);
 });
 
-router.get('/api/movie/:id', (req, res) => {
+router.get('/:id', (req, res) => {
     // eslint-disable-next-line radix
     const movie = movies.find(m => m.id === parseInt(req.params.id));
     if (!movie) {
@@ -32,7 +37,7 @@ router.get('/api/movie/:id', (req, res) => {
     return res.status(200).send(movie);
 });
 
-router.post('/api/movies/', (req, res) => {
+router.post('/', (req, res) => {
     // eslint-disable-next-line no-use-before-define
     const { error } = validateMovie(req.body);
     if (error) {
@@ -49,7 +54,7 @@ router.post('/api/movies/', (req, res) => {
     return res.status(201).send('Movie successfully added to Database');
 });
 
-router.put('/api/movie/:id', (req, res) => {
+router.put('/:id', (req, res) => {
     const movie = movies.find(m => m.id === parseInt(req.params.id));
     if (!movie) {
         return res.status(404).send('The movie with the given ID was not found');
@@ -59,10 +64,10 @@ router.put('/api/movie/:id', (req, res) => {
         return res.status(400).send(error.details[0].message);
     }
     movie.name = req.body.name;
-    return res.status(200).send(movie);
+    res.status(200).send(movie);
 });
 
-router.delete('/api/movie/:id', (req, res) => {
+router.delete('/:id', (req, res) => {
     const movie = movies.find(c => c.id === parseInt(req.params.id));
     if (!movie) {
         return res.status(404).send('The movie with the given ID was not found');
@@ -72,4 +77,5 @@ router.delete('/api/movie/:id', (req, res) => {
 
     return res.status(204).send('Movie deleted successfully');
 });
+
 module.exports = router;
